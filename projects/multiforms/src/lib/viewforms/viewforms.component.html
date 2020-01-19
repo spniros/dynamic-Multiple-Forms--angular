@@ -1,0 +1,76 @@
+<!-- <h3>{{formTittle}}</h3> -->
+
+<div [formGroup]="formgroup" *ngIf="isForm" class="row">
+  <input type="hidden" name="formId" formControlName="formId" >
+  <div *ngFor="let field of htmlFormData" [ngClass]="field.className">
+    <div [ngSwitch]="field.type">
+
+      <!-- case :textbox -->
+      <div *ngSwitchCase="'text'">
+        <label for="">{{field.name}} <span class="text-danger" *ngIf='field.isMandatory'>*</span> </label>
+        <input [attr.type]="field.type" class="form-control form-control-sm" [id]="field.name" [name]="field.name"
+          [formControlName]="field.name" [placeholder]="field.placeHolder">
+          <div class="text-danger" *ngIf="formgroup.controls[field.name].touched && !formgroup.controls[field.name].valid"> <small>{{field.name}} Required Field.</small> </div>
+
+      </div>
+      <!-- case: radio -->
+      <div *ngSwitchCase="'radio'">
+        <label for="">{{field.name}} <span class="text-danger" *ngIf='field.isMandatory'>*</span></label>
+        <div>
+          <div class="form-check " *ngFor="let opt of field.options">
+            <input class="form-check-input" type="radio" [value]="opt.key" [formControlName]="field.name">
+            <label class="form-check-label"> {{opt.label}} </label>
+          </div>
+        </div>
+        <div class="text-danger" *ngIf="formgroup.controls[field.name].touched && !formgroup.controls[field.name].valid"> <small>{{field.name}} Required Field.</small> </div>
+
+      </div>
+
+      <!-- case: select box -->
+      <div *ngSwitchCase="'dropdown'">
+        <label for="">{{field.name}} <span class="text-danger" *ngIf='field.isMandatory'>*</span></label>
+        <select class="form-control form-control-sm " placeholder="field.placeHolder" [id]="field.name" [formControlName]="field.name">
+          <option *ngFor="let opt of field.options" [value]="opt.key">{{opt.label}}</option>
+        </select>
+        <div class="text-danger" *ngIf="formgroup.controls[field.name].touched && !formgroup.controls[field.name].valid"> <small>{{field.name}} Required Field.</small> </div>
+
+      </div>
+
+      <!-- case:checkbox -->
+      <div *ngSwitchCase="'checkbox'">
+        <label for="">{{field.name}} <span class="text-danger" *ngIf='field.isMandatory'>*</span></label>
+        <!-- [formGroupName]="field.name" -->
+        <div *ngFor="let opt of field.options">
+          <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="defaultChecked2" [formControlName]="field.name">
+            <label class="custom-control-label" for="defaultChecked2"> {{opt.label}}</label>
+          </div>
+          <!-- <div class="form-check-label" *ngFor="let opt of field.options">
+            <input [formControlName]="field.name" class="form-check-input " type="checkbox" id="inlineCheckbox1" value="option1" />
+            {{opt.label}}
+            <br>
+          </div> -->
+        </div>
+      </div>
+
+      <!-- case:textarea -->
+      <div *ngSwitchCase="'textarea'">
+        <label for="">{{field.name}} <span class="text-danger" *ngIf='field.isMandatory'>*</span></label>
+        <textarea [formControlName]="field.name" [placeholder]="field.placeHolder"  [id]="field.name" class="form-control " ></textarea>
+        <div class="text-danger" *ngIf="formgroup.controls[field.name].touched && !formgroup.controls[field.name].valid"> <small>{{field.name}} Required Field.</small> </div>
+
+      </div>
+      
+
+    </div>
+
+
+
+  </div>
+  <div class="col-md-12 mt-2">
+    <button class="btn btn-sm btn-success" [disabled]="!formgroup.valid" (click)="saveData(formgroup.value)">Save</button>
+  </div>
+
+
+
+</div>

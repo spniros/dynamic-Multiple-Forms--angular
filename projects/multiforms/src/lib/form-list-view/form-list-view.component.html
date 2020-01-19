@@ -1,0 +1,67 @@
+<!-- <p>
+  form-list-view works!
+</p> -->
+<div class="container-fluid" *ngIf="createdFormDetailsList.length>0">
+  <div class="row">
+    <div class="col-md-12 text-right">
+      view Mode:
+      <span class="btn-sm border-radius-none" (click)="vieMode('popup')"  [ngClass]="isPopUp?'btn-success':'btn-light'" >popup</span> <span class=" btn-sm border-radius-none " (click)="vieMode('accordin')" [ngClass]="isPopUp?'btn-light':'btn-success'">Accordian</span> 
+    </div>
+  </div>
+</div>
+
+
+
+<div class="container-fluid" *ngIf="isPopUp">
+  <div class="row">
+    <ul>
+      <ng-container *ngFor="let item of createdFormDetailsList">
+        <li  (click)="showFormSelected(template,item)">{{item.formTittle}} </li>
+        <!-- <span class="text-right text-danger float-left-view" (click)="editForm(item)">Edit View</span> -->
+      </ng-container>
+    </ul>
+  </div>
+</div>
+
+
+
+<!-- accoridan style form -->
+<div class="container-fluid" *ngIf="!isPopUp">
+  <accordion>
+    <accordion-group *ngFor="let item of createdFormDetailsList" [heading]="item.formTittle">
+        <lib-viewforms [formId]="item.formId" [viewFormDetails]="item"   (formSave)="formDataGet($event)"></lib-viewforms>
+        <!-- this commented line for already save form data  -->
+      <!-- <lib-viewforms [formId]="item.formId" [viewFormDetails]="item"  [saveFormData]="item?.saveFormData" (formSave)="formDataGet($event)"></lib-viewforms> -->
+    </accordion-group>
+  </accordion>
+</div>
+<!-- accordian style end  -->
+
+
+
+
+<ng-template #template>
+  <div class="modal-header bg-info">
+    <h4 class="modal-title pull-left">{{selectedTittle}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <lib-viewforms [formId]="formId" [viewFormDetails]="formDetails" (formSave)="formDataGet($event)"></lib-viewforms>
+      </div>
+    </div>
+
+  </div>
+</ng-template>
+
+
+
+<!-- edit part start -->
+<!-- <div class="container-fluid" *ngIf="isEditFormView">
+   
+      <lib-dynamicforms [editFormElements]="elementEditForm"></lib-dynamicforms>
+    
+  </div> -->

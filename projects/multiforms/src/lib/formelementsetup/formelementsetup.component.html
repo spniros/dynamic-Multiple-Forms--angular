@@ -1,0 +1,90 @@
+<p>
+  {{Fieldtype}} Settings
+</p>
+
+<div [formGroup]="elementform">
+  <input type="hidden" name="fieldtype" formControlName="fieldtype">
+  <div class="row">
+    <div class="col-md-12">
+      <label for=""> Field Name</label>
+      <input type="text" class="form-control form-control-sm" formControlName="fieldName">
+      <div class="text-danger" *ngIf="elementform.controls['fieldName'].touched && !elementform.controls['fieldName'].valid"> <small>fieldName is Required Field.</small> </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 mt-1">
+      <label for="" class="pr-2">Is Mandatory Field </label>
+      <input type="checkbox"   name="isMandatory"  formControlName="isMandatory">
+    </div>
+  </div>
+
+  <div class="row" *ngIf="!isOption">
+    <div class="col-md-12 mt-1">
+      <label for="" class="pr-2">Place Holder</label>
+      <input type="text"   name="placeHolder"  class="form-control form-control-sm" formControlName="placeHolder">
+    </div>
+  </div>
+
+ 
+
+  <!-- <div class="row" *ngIf="isOption">   
+      <div class="col-md-12">
+        <label for="options">Options</label>
+        <input type="text" class="form-control form-control-sm" formControlName="options">
+      </div>
+    </div> -->
+
+
+  <!-- new part  -->
+  <div formArrayName="options" *ngIf="isOption">
+
+    <!-- <div *ngFor="let options of elementform.controls.options.controls; let i=index"> -->
+      <div *ngFor="let options of elementform.get('options')['controls']; let i=index">
+
+      <!-- address header, show remove button when more than one address available -->
+      <div class="mt-1">
+        <span>options: {{i + 1}} </span>
+        <!-- myForm['controls'].links['controls'] -->
+        <span *ngIf="i > 0" (click)="removeOptions(i)" class="text-danger">
+        <!-- <span *ngIf="elementform.controls.options.controls.length > 1" (click)="removeOptions(i)" class="text-danger"> -->
+          <i class="fas fa-minus-square"></i>
+        </span>
+      </div>
+
+      <div [formGroupName]="i" class="row">
+        <!--label-->
+        <div class="col-md-6">
+          <label>label</label>
+          <input type="text" class="form-control form-control-sm" formControlName="label">
+
+        </div>
+        <!--postcode-->
+        <div class="col-md-6">
+          <label>key</label>
+          <input type="text" class="form-control form-control-sm" formControlName="key">
+        </div>
+      </div>
+
+
+
+
+
+
+    </div>
+
+    <span (click)="addOptions()" class=" text-success"><i class="fas fa-plus-square "></i></span>
+  </div>
+
+  <!-- new part end -->
+
+
+
+
+
+  <div class="row mt-2">
+    <button class="btn btn-sm btn-success ml-1 mr-3 " [disabled]="!elementform.valid" (click)="saveFormValue(elementform.value)">Create </button>
+    <button class="btn btn-sm btn-danger push-right" (click)="cancel()">Clear </button>
+  </div>
+
+</div>

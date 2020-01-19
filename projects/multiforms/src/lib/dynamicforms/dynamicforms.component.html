@@ -1,0 +1,201 @@
+<!-- <p>
+  dynamicforms works!
+</p> -->
+
+<div class="container-fluid" >
+  <div class="row bg-light mb-2 p-2" [formGroup]="initialForm">
+    <!-- <div class="col-md-1 h6 pt-1 ">Title : </div> -->
+    <div class="col-md-6">
+      <label for="">Title</label>
+      <input type="text" class="form-control form-control-sm" placeholder="Title" name="formName" id="" formControlName="formName">
+    </div>
+    <!-- <div class="col-md-1 h6 pt-1 text-right">Grid:</div> -->
+    <div class="col-md-5">
+      <label for="">Grid</label>
+      <select name="" id="" class="form-control form-control-sm" formControlName="gridClass">
+        <option value="">Select</option>
+        <option value="col-md-12">1 Grid</option>
+        <option value="col-md-6">2 Grid</option>
+        <option value="col-md-4">3 Grid</option>
+        <option value="col-md-3">4 Grid</option>
+        <option value="col-md-2">5 Grid</option>
+      </select>
+    </div>
+ 
+    <div class="col-md-1">
+      <button class="btn btn-sm btn-success  mt-4" [disabled]="!initialForm.valid" (click)="intialFormSave(initialForm.value)" >Create</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- form dynamic creation -->
+
+<div class="container-fluid" *ngIf="isTittleReady" >
+  <div class="row">
+    <div class="col-md-2">
+      <div class="card">
+        <ul>
+          <li  (click)="createFormElements('text')">TextBox</li>
+          <li  (click)="createFormElements('radio')">Radio</li>
+          <li  (click)="createFormElements('dropdown')">SelectBox</li>
+          <li  (click)="createFormElements('checkbox')">CheckBox</li>
+          <li  (click)="createFormElements('textarea')">TextArea</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-7 bg-light border-dark">
+      <h5>{{formTittle}}</h5>
+      <div [formGroup]="formgroup"  *ngIf="isForm" class="row"  >
+          <!-- class="{{gridSetting}} border-white"  -->
+          
+        <div *ngFor="let field of htmlFormData; index as i" class="border-white" [ngClass]="field.className" >
+           <div class="size-adjustment">
+              <span (click)="setWidth(field,'plus')" class="fas fa-plus-square size-adjustment-element"></span>
+              <span (click)="setWidth(field,'minus')" class="fas fa-minus-square size-adjustment-element"></span>
+           </div>
+          
+
+          <div [ngSwitch]="field.type"  >
+
+            <!-- case :textbox -->
+            <div *ngSwitchCase="'text'" >
+              <label  for="">{{field.name}} <span class="text-danger" *ngIf='field.isMandatory'>*</span></label>
+              <input [attr.type]="field.type" class="form-control  form-control-sm " [id]="field.name" [name]="field.name"
+                [formControlName]="field.name" [placeholder]="field.placeHolder">   
+            </div>
+            <!-- case: radio -->
+            <div *ngSwitchCase="'radio'" >
+              <label  for="">{{field.name}} <span class="text-danger" *ngIf='field.isMandatory'>*</span> </label>
+              <div >
+                <div class="form-check " *ngFor="let opt of field.options">
+                  <input class="form-check-input" type="radio" [value]="opt.key" [formControlName]="field.name">
+                  <label class="form-check-label"> {{opt.label}} </label>
+                </div>
+                
+              </div>
+            </div>
+
+            <!-- case: select box -->
+            <div  *ngSwitchCase="'dropdown'">
+              <label  for="">{{field.name}} <span class="text-danger" *ngIf='field.isMandatory'>*</span></label>
+              <select class="form-control  form-control-sm"  [id]="field.name" [formControlName]="field.name">
+                <option *ngFor="let opt of field.options" [value]="opt.key">{{opt.label}}</option>
+              </select>
+            
+            </div>
+
+            <!-- case:checkbox -->
+            <div  *ngSwitchCase="'checkbox'">
+                <label class="col-md-4" for="">{{field.name}} <span class="text-danger" *ngIf='field.isMandatory'>*</span></label>
+                <!-- [formGroupName]="field.name" -->
+                <div  class="col-md-6 "  >
+                    <div class="form-check-label" *ngFor="let opt of field.options">
+                       <input [formControlName]="field.name" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1" />
+                       {{opt.label}}
+                       <br>
+                      
+                    </div>
+                    
+                    </div>
+            </div>
+
+          <!-- case:textarea -->
+          <div *ngSwitchCase="'textarea'" >
+            <label  for="">{{field.name}} <span class="text-danger" *ngIf='field.isMandatory'>*</span></label>
+            <textarea [formControlName]="field.name" [id]="field.name" rows="3" class="form-control form-control-sm " [placeholder]="field.placeHolder" ></textarea>
+            
+          </div>
+
+        <!-- changeorder -->
+        <!-- <div class="arrowcover">
+        <span (click)="moveItem(i,i-1)"><i class="fas fa-angle-up text-primary"></i> </span> 
+        <span (click)="moveItem(i,i+1)"><i class="fas fa-angle-down text-primary"></i></span>
+        <span (click)="removeItem(i)" class="pl-1"><i class="fas fa-archive"></i></span>
+      </div> -->
+      
+          </div>
+        
+          <div class="arrowcover">                
+              <span (click)="moveItem(i,i-1)" class="pr-1 fas fa-arrow-left arrow-section"> </span> 
+              <span (click)="moveItem(i,i+1)" class="fas fa-arrow-right  arrow-section"></span>
+              <span (click)="removeItem(i)" class="pl-1 fas fa-archive arrow-section text-danger"></span>
+            </div>
+      </div>
+        <!-- <button class="btn  btn-default" (click)="submitForm(formgroup.value)">Create</button> -->
+
+
+      </div>
+      <button class="btn btn-sm  btn-default mt-1" (click)="submitForm(formgroup.value)">Create</button>
+     <div class="alert alert-danger mt-1" *ngIf="isRepeatField" >Already This Field Name is Added</div>
+
+    </div>
+
+
+    <div class="col-md-3">
+      <div class="card" *ngIf="isSetUp" >
+
+        <div class="card-body">
+          <h5 class="card-title">Field Options</h5>
+          <lib-formelementsetup *ngIf="isSetUp" [Fieldtype]="fieldType" (change)="setUpElements($event)"></lib-formelementsetup>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- 
+  <div class="row">
+      <app-formelementsetup *ngIf="isSetUp" [Fieldtype]="fieldType" (change)="setUpElements($event)"></app-formelementsetup>
+  </div> -->
+</div>
+
+
+
+<!-- Saved form view  -->
+<!-- <div class="container" *ngIf="isTittleReady">
+
+  <button (click)="isShowForm = !isShowForm" class="mt-2 btn btn-outline-info"> <span *ngIf="isShowForm else elseBlock">Hide</span>
+    <ng-template #elseBlock>Show</ng-template>  Created Form</button>
+    
+  <div class="row mt-2">
+      
+    <div class="col-md-5 bg-light">
+      
+          <app-viewforms *ngIf="isShowForm"></app-viewforms>
+      </div>
+        
+    
+  </div>
+</div> -->
+
+
+<!-- <div class="container-fluid">
+  <div class="row">
+
+<ul>
+  <li *ngFor="let item of listOfCreatedFormDetails" (click)="showFormSelected(template,item)">{{item.formTittle}}</li>
+</ul>
+
+  </div>
+</div> -->
+
+
+
+<!-- <ng-template #template>
+    <div class="modal-header bg-info">
+      <h4 class="modal-title pull-left">{{selectedTittle}}</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-md-12">
+            <app-viewforms [formId]="formId" ></app-viewforms>
+        </div>
+      </div>
+        
+    </div>
+  </ng-template> -->
